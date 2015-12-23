@@ -357,7 +357,7 @@ judge\_rank :: double
 Here are the default judgment windows of some popular players.
 
 ============= ======== ========== ========
-LunaticRave2_ [*]_     Bemuse_
+LunaticRave2_ [#]_     Bemuse_
 ====================== ===================
 Perfect GREAT ≤ 18 ms  METICULOUS ≤ 20 ms
 GREAT         ≤ 40 ms  PRECISE    ≤ 50 ms
@@ -369,7 +369,7 @@ POOR          > 200 ms MISSED     > 200 ms
 .. _LunaticRave2: http://www.lr2.sakura.ne.jp/index2.html
 .. _Bemuse: http://bemuse.ninja/
 
-.. [*] #RANK 2 (NORMAL)
+.. [#] #RANK 2 (NORMAL)
 
 total :: double
   Default total value is 100.
@@ -608,11 +608,11 @@ MP4 is the most common multimedia file format used in mobile phones with native 
 
   MP3 file format is discouraged.
 
-  Both MP3 encoder and decoders add silence to the beginning and end of file [*]_.
+  Both MP3 encoder and decoders add silence to the beginning and end of file [#]_.
 
   This causes sounds to be shifted, sometimes as much as 20 milliseconds. This could change a Perfect GREAT into a GREAT.
 
-.. [*] http://lame.sourceforge.net/tech-FAQ.txt
+.. [#] http://lame.sourceforge.net/tech-FAQ.txt
 
 notes :: [Note]
   \

@@ -454,8 +454,6 @@ lines :: [BarLine]
 
 .. _100% minimoo-G: https://www.youtube.com/watch?v=f1VBBNrSdgk
 
-` <#>`__\ ` <#>`__
-
 +--------------------------------------+--------------------------------------+
 | 4/4 time signature                   | .. code::                            |
 | (common time)                        |                                      |

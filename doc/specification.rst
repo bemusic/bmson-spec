@@ -215,7 +215,7 @@ Beat Resolution
 
 This is the number of pulses per one quarter note in a 4/4 measure. By default, this value is 240, which means that 1 quarter note is split into 240 pulses.
 
-|image0|
+|time_units|
 
 Example between beat, pulse, and metric time.
 
@@ -550,7 +550,7 @@ grouped together in the same array.
 sound\_channels :: [SoundChannel]
   A sound channel represents an audio track.
 
-  |image1|
+  |sound_channels|
 
 Slicing and Restarting
 ----------------------
@@ -558,11 +558,11 @@ Slicing and Restarting
 The notes inside this sound channel determines how to slice and when to
 restart.
 
-|image2|
+|slicing_1|
 
 Notes at different times caused sounds to be sliced at different time.
 
-|image3|
+|slicing_2|
 
 The highlighted SoundChannel represents a kick sound. Instead of
 repeating a kick sound many time, leading to a redundant audio file, the
@@ -692,7 +692,7 @@ Slice # Audio Start Time Audio End Time Slice Duration (s)
 
 Sliced sound looks like this:
 
-|image4|
+|slicing_3|
 
 Finally, these slices become associated with the notes.
 
@@ -823,8 +823,8 @@ SC: Scratch (Turntable)
 
 ---------------
 
-.. |image0| image:: images/image03.png
-.. |image1| image:: images/image00.png
-.. |image2| image:: images/image01.png
-.. |image3| image:: images/image04.png
-.. |image4| image:: images/image02.png
+.. |time_units| image:: images/time_units.png
+.. |sound_channels| image:: images/sound_channels.png
+.. |slicing_1| image:: images/slicing_1.png
+.. |slicing_2| image:: images/slicing_2.png
+.. |slicing_3| image:: images/slicing_3.png

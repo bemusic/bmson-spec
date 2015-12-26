@@ -34,7 +34,7 @@ Format Overview
 
 The format follows `Web IDL (Second Edition)`
 
-.. code:: c
+.. code-block:: c
 
   // top-level object
   dictionary Bmson {
@@ -455,7 +455,7 @@ lines :: [BarLine]
 .. _`100% minimoo-G`: https://www.youtube.com/watch?v=f1VBBNrSdgk
 
 +--------------------------------------+--------------------------------------+
-| **4/4 time signature**               | .. code:: yaml                       |
+| **4/4 time signature**               | .. code-block:: yaml                 |
 |                                      |                                      |
 | (common time)                        |   lines:                             |
 |                                      |     - y: 960                         |
@@ -463,9 +463,8 @@ lines :: [BarLine]
 |                                      |     - y: 2880                        |
 |                                      |     - y: 3840                        |
 |                                      |     # ...                            |
-|                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **3/4 time signature**               | .. code:: yaml                       |
+| **3/4 time signature**               | .. code-block:: yaml                 |
 |                                      |                                      |
 | (tempus perfectum)                   |   lines:                             |
 |                                      |     - y: 720                         |
@@ -473,17 +472,15 @@ lines :: [BarLine]
 |                                      |     - y: 2160                        |
 |                                      |     - y: 3840                        |
 |                                      |     # ...                            |
-|                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Mapping from BMS**                 | .. code:: yaml                       |
+| **Mapping from BMS**                 | .. code-block:: yaml                 |
 |                                      |                                      |
-| .. code::                            |   lines:                             |
+| .. code-block::                      |   lines:                             |
 |                                      |     - y: 960    # 000~001: 960       |
 |   #00102:0.75                        |     - y: 1680   # 001~002: 720       |
 |   #00302:1.25                        |     - y: 2640   # 002~003: 960       |
 |                                      |     - y: 3840   # 003~004: 1200      |
 |                                      |     # ...                            |
-|                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
 Timing
@@ -521,7 +518,7 @@ Order of Processing
   - If it is a playable note, the player must hit the note when the music pauses (not when the music resumes).
   - For example, consider the following notes and stops:
 
-    .. code:: yaml
+    .. code-block:: yaml
 
       stop: { y: 240, duration: 240 }
       note: { y: 240 }
@@ -653,7 +650,7 @@ Slicing Example
 
 Given this ``SoundChannel`` object:
 
-.. code:: yaml
+.. code-block:: yaml
 
   sound_channels:
   - name: vox.wav
@@ -709,7 +706,7 @@ Edge Cases
 
   Example:
 
-  .. code:: yaml
+  .. code-block:: yaml
 
    sound_channels:
    - file: kick.wav
@@ -746,7 +743,7 @@ Playback Behavior
 
   A rough algorithm:
 
-  .. code::
+  .. code-block::
 
     for each pair of consecutive slice s1 and s2
       if either slice is used by non-BGM note

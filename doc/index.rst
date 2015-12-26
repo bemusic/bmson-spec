@@ -32,7 +32,7 @@ For developers, it is easier to implement than BMS due to it being based on JSON
 Format Overview
 ===============
 
-The format follows `Web IDL (Second Edition)`
+The format follows `Web IDL (Second Edition)`_
 
 .. code-block:: c
 
@@ -198,7 +198,7 @@ clock time (MIDI clock): y
 Beat Resolution
 ---------------
 
-This is the number of pulses per one quarter note in a 4/4 measure. By default, this value is ``240``, which means that 1 quarter note is split into 240 pulses. [#]_
+This is the number of pulses per one quarter note in a 4/4 measure. By default, this value is ``240``, which means that 1 quarter note is split into 240 pulses [#]_.
 
 .. figure:: images/time_units.png
 
@@ -788,7 +788,7 @@ bga\_header :: [BGAHeader]
 
 
 bga\_events, layer\_events, poor\_events :: [BGAEvent]
-  ``bga_events`` represent image/video files that will be displayed as the song’s background animation[#]_.
+  ``bga_events`` represent image/video files that will be displayed as the song’s background animation [#]_.
 
   ``layer_events`` represent image/video files that will be *layered* on top of the BGA.
 
@@ -796,7 +796,7 @@ bga\_events, layer\_events, poor\_events :: [BGAEvent]
 
 - ``y`` is pulse number when the picture is shown.
 
-- Unlike \ `BMS Layer Channel #xxx07`_, black pixels will not be made transparent. If you want transparency, use a file format that support transparency, such as PNG[#]_.
+- Unlike \ `BMS Layer Channel #xxx07`_, black pixels will not be made transparent. If you want transparency, use a file format that support transparency, such as PNG [#]_.
 
 .. _`BMS Layer Channel #xxx07`: http://hitkey.nekokan.dyndns.info/cmds.htm#BMPXX-LAYER
 

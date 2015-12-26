@@ -579,8 +579,8 @@ name :: DOMString
 
 - If file extension is provided but the file is not found or cannot be played, then the implementation should treat the file name as if its extension is removed.
 
-  - Example: ``{ name: “piano.wav” }`` → ``piano.wav`` not found → Treat as ``"piano"`` → Try ``piano.wav``, ``piano.ogg``, …
-  - Example: ``{ name: “piano.ogg” }`` → ogg not supported → Treat as ``"piano"`` → Try ``piano.wav``, ``piano.ogg``, ``piano.m4a``…
+  - Example: ``{ name: "piano.wav" }`` → ``piano.wav`` not found → Treat as ``"piano"`` → Try ``piano.wav``, ``piano.ogg``, …
+  - Example: ``{ name: "piano.ogg" }`` → ogg not supported → Treat as ``"piano"`` → Try ``piano.wav``, ``piano.ogg``, ``piano.m4a``…
 
 - The sound files may live in subdirectories relative to bmson file.
 
@@ -591,7 +591,7 @@ name :: DOMString
     - Reference to parent directory: ``../../../var/www/html/config.php``
     - Null characters (``\0``)
 
-  - Example: ``{ name: “intro\\drum” }``
+  - Example: ``{ name: "intro\\drum" }``
 
 Sound File Format Recommendation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

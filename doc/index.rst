@@ -343,7 +343,7 @@ judge\_rank :: double
   - The ``judge_rank`` may be interpreted as a percentage of judgment window.
   - For example, to get a PERFECT judgment normally, you must hit the key within 20 millisecond window.
   - If ``judge_rank`` is  250, then this judgement window is 2.5x the normal size, which is equal to 50 milliseconds. This make this chart easier.
-  - If judge\_rank is 50, then judgement window is 0.5x the normal size (2x smaller). You must hit the key within 10 millisecond window.
+  - If ``judge_rank`` is 50, then judgement window is 0.5x the normal size (2x smaller). You must hit the key within 10 millisecond window.
 
 Here are the default judgment windows of some popular players.
 

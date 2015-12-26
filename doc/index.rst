@@ -316,6 +316,7 @@ chart\_name :: DOMString
 
 level :: unsigned long
   A value that shows the level of the note chart.
+
 - It is usually determined by subjective evaluation of the creator. It is recommended that the level number is based on the level scale of the base game.
 
 - For example, in ``beat`` mode, the level should be considered based on scale of 1~12.
@@ -475,7 +476,7 @@ lines :: [BarLine]
 +--------------------------------------+--------------------------------------+
 | **Mapping from BMS**                 | .. code-block:: yaml                 |
 |                                      |                                      |
-| .. code-block::                      |   lines:                             |
+| .. code::                            |   lines:                             |
 |                                      |     - y: 960    # 000~001: 960       |
 |   #00102:0.75                        |     - y: 1680   # 001~002: 720       |
 |   #00302:1.25                        |     - y: 2640   # 002~003: 960       |
@@ -743,7 +744,7 @@ Playback Behavior
 
   A rough algorithm:
 
-  .. code-block::
+  .. code::
 
     for each pair of consecutive slice s1 and s2
       if either slice is used by non-BGM note

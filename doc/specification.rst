@@ -143,8 +143,8 @@ Breaking Changes
 
 - Rename fields
 
-  - ``bpmNotes`` -> ``bpm_events``
-  - ``stopEvents`` -> ``stop_events``
+  - ``bpmNotes`` → ``bpm_events``
+  - ``stopEvents`` → ``stop_events``
 
 - Remove fields
 
@@ -198,13 +198,13 @@ clock time (MIDI clock): y
 Beat Resolution
 ---------------
 
-This is the number of pulses per one quarter note in a 4/4 measure. By default, this value is ``240``, which means that 1 quarter note is split into 240 pulses[#]_.
+This is the number of pulses per one quarter note in a 4/4 measure. By default, this value is ``240``, which means that 1 quarter note is split into 240 pulses. [#]_
 
 .. figure:: images/time_units.png
 
    Example between beat, pulse, and metric time.
 
-.. admonition:: Note
+.. admonition:: Notes
 
   In this document, we assume that resolution is always ``240``.
 

@@ -2,7 +2,7 @@
 bmson format specification
 ==========================
 
-Version 1.0.0-beta (2015/12/22)
+Version 1.0.0-beta (2015/12/26)
 
 Links
 =====

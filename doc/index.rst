@@ -275,7 +275,7 @@ artist :: DOMString
   - ``Artist1 vs Artist2``
   - ``Artist1 feat. Vocalist``
 
-subartists :: [DOMString]
+subartists :: DOMString[]
   Other artists that help authored this bmson file.
 
   Default value is an empty array.
@@ -437,7 +437,7 @@ Time Signatures
 - In BMS, notes are based on ‘measure number’ and ‘fraction of measure.’ The actual time of an event is also dependent on the time signature.
 - In bmson, everything is based on a ‘pulse number,’ and is independent from any time signature or measure. A pulse is always a fraction of a quarter note in a 4/4 measure.
 
-lines :: [BarLine]
+lines :: BarLine[]
   \
 
 - Each BarLine object contains the y-position of each bar line to be displayed onscreen.
@@ -487,7 +487,7 @@ lines :: [BarLine]
 Timing
 ======
 
-bpm\_events :: [BpmEvent] -- Tempo Changes
+bpm\_events :: BpmEvent[] -- Tempo Changes
   At the start of the song, the music will progress at a tempo specified in ``info.init_bpm``.
 
 - It is a fatal error if ``info.init_bpm`` is unspecified.
@@ -495,7 +495,7 @@ bpm\_events :: [BpmEvent] -- Tempo Changes
 - If there are many ``BpmEvent`` at the same time, the BPM will change to the last one.
 - Example: ``[ { y: 240, bpm: 100 }, { y: 240, bpm: 120 } ]`` → Tempo is changed to 120 BPM.
 
-stop\_events :: [StopEvent] -- Stops
+stop\_events :: StopEvent[] -- Stops
   When a ``StopEvent`` is encountered, the music will pause for a duration equivalent to a number of pulses specified in ``duration`` field.
 
 - If there are many ``StopEvent`` at the same time, these stop events add up.
@@ -551,7 +551,7 @@ Sound Channels
 **bmson is sound channel based.** Notes from the same sound channel are
 grouped together in the same array.
 
-sound\_channels :: [SoundChannel]
+sound\_channels :: SoundChannel[]
   A sound channel represents an audio track.
 
   .. image:: images/sound_channels.png
@@ -616,7 +616,7 @@ MP4 is the most common multimedia file format used in mobile phones with native 
 
 .. [#] http://lame.sourceforge.net/tech-FAQ.txt
 
-notes :: [Note]
+notes :: Note[]
   \
 
 - ``x`` is the player channel for this note.
@@ -767,7 +767,7 @@ bga :: BGA
 
 Currently, BGA specification is just compatible with BMS.
 
-bga\_header :: [BGAHeader]
+bga\_header :: BGAHeader[]
   \
 
 - ``id`` is picture file identifier.
@@ -788,7 +788,7 @@ bga\_header :: [BGAHeader]
     - Audio channels may be ignored.
 
 
-bga\_events, layer\_events, poor\_events :: [BGAEvent]
+bga\_events, layer\_events, poor\_events :: BGAEvent[]
   ``bga_events`` represent image/video files that will be displayed as the song’s background animation [#]_.
 
   ``layer_events`` represent image/video files that will be *layered* on top of the BGA.

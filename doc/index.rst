@@ -8,7 +8,7 @@ Links
 =====
 
 - Official Site:
-  http://cerebralmuddystream.nekokan.dyndns.info/bmson/
+  https://bmson.nekokan.dyndns.info/
 - how_to_bmson (Japanese):
   http://www40.atwiki.jp/laser_bm/pages/110.html
 - #bmson Creaion Notes (English):

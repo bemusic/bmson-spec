@@ -2,7 +2,7 @@
 bmson format specification
 ==========================
 
-Version 1.0.0-beta (2015/12/26)
+Version 1.0.1-beta (2022/MM/DD)
 
 Links
 =====
@@ -38,33 +38,43 @@ The format follows `Web IDL (Second Edition)`_
 
   // top-level object
   dictionary Bmson {
-      DOMString      version;        // bmson version
-      BmsonInfo      info;           // information, e.g. title, artist, …
-      BarLine[]?     lines;          // location of bar-lines in pulses
-      BpmEvent[]?    bpm_events;     // bpm changes
-      StopEvent[]?   stop_events;    // stop events
-      SoundChannel[] sound_channels; // note data
-      BGA            bga;            // bga data
+      DOMString version;    // bmson version
+      BmsonInfo bmson_info; // bmson information (title, artist, …)
+      ChartInfo chart_info; // chart information (level, chart_name, …)
+      ChartData chart_data; // chart data
   }
 
   // header information
   dictionary BmsonInfo {
-      DOMString     title;                 // self-explanatory
-      DOMString     subtitle = "";         // self-explanatory
-      DOMString     artist;                // self-explanatory
-      DOMString[]?  subartists = [];       // ["key:value"]
-      DOMString     genre;                 // self-explanatory
+      DOMString    title;           // self-explanatory
+      DOMString    subtitle = "";   // self-explanatory
+      DOMString    artist;          // self-explanatory
+      DOMString[]? subartists = []; // ["key:value"]
+      DOMString    genre;           // self-explanatory
+      DOMString?   preview_music;   // preview music filename
+  }
+
+  // chart info
+  dictionary ChartInfo {
       DOMString     mode_hint = "beat-7k"; // layout hints, e.g. "beat-7k", "popn-5k", "generic-nkeys"
       DOMString     chart_name;            // e.g. "HYPER", "FOUR DIMENSIONS"
       unsigned long level;                 // self-explanatory
-      double        init_bpm;              // self-explanatory
-      double        judge_rank = 100;      // relative judge width
-      double        total = 100;           // relative lifebar gain
-      DOMString?    back_image;            // background image filename
       DOMString?    eyecatch_image;        // eyecatch image filename
       DOMString?    banner_image;          // banner image filename
-      DOMString?    preview_music;         // preview music filename
-      unsigned long resolution = 240;      // pulses per quarter note
+      DOMString?    back_image;            // background image filename
+      BGA           bga;                   // bga data
+  }
+
+  // chart data
+  dictionary ChartData {
+      double         init_bpm;                // self-explanatory
+      double         judge_multiplier = 1.00; // relative judge width
+      double         life_multiplier = 1.00;  // relative lifebar gain
+      unsigned long  resolution = 240;        // pulses per quarter note
+      BarLine[]?     lines;                   // location of bar-lines in pulses
+      BpmEvent[]?    bpm_events;              // bpm changes
+      StopEvent[]?   stop_events;             // stop events
+      SoundChannel[] sound_channels;          // note data
   }
 
   // bar-line event
@@ -74,11 +84,11 @@ The format follows `Web IDL (Second Edition)`_
   // sound channel
   dictionary SoundChannel {
       DOMString name; // sound file name
-      Note[] notes;   // notes using this sound
+      NoteEvent[] note_events;   // notes using this sound
   }
 
   // sound note
-  dictionary Note {
+  dictionary NoteEvent {
       any x;           // lane
       unsigned long y; // pulse number
       unsigned long l; // length (0: normal note; greater than zero (length in pulses): long note)
@@ -123,6 +133,49 @@ The format follows `Web IDL (Second Edition)`_
 
 Changelog
 =========
+
+1.0.1 (from 1.0.0)
+------------------
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Separated ``BmsonInfo`` into ``BmsonInfo`` and ``ChartInfo``
+
+  - ``BmsonInfo.mode_hint`` is now ``ChartInfo.mode_hint``
+  - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
+  - ``BmsonInfo.level`` is now ``ChartInfo.level``
+  - ``BmsonInfo.back_image`` is now ``ChartInfo.back_image``
+  - ``BmsonInfo.eyecatch_image`` is now ``ChartInfo.eyecatch_image``
+  - ``BmsonInfo.banner_image`` is now ``ChartInfo.banner_image``
+  - ``BmsonInfo.bga`` is now ``ChartInfo.bga``
+
+- Separated ``Bmson`` into ``Bmson`` and ``ChartData``
+
+  - ``Bmson.lines`` is now ``ChartData.lines``
+  - ``Bmson.bpm_events`` is now ``ChartData.bpm_events``
+  - ``Bmson.stop_events`` is now ``ChartData.stop_events``
+  - ``Bmson.sound_channels`` is now ``ChartData.sound_channels``
+
+- Rename objects
+
+  - ``Note`` → ``NoteEvent``
+
+- Rename fields
+
+  - ``Bmson.info`` → ``Bmson.bmson_info``
+  - ``SoundChannel.notes`` → ``SoundChannel.note_events``
+  - ``BmsonInfo.total`` → ``ChartData.life_multiplier``
+  - ``BmsonInfo.judge_rank`` → ``ChartData.judge_multiplier``
+
+- ``ChartData.life_multiplier`` and ``ChartData.judge_multiplier`` are now multiplier based instead of percentage based.
+
+Non Breaking Changes
+~~~~~~~~~~~~~~~~~~~~
+
+- Add fields
+  - ``chart_info``
+  - ``chart_data``
 
 1.0.0 (from 0.21)
 -----------------
@@ -295,6 +348,15 @@ subartists :: DOMString[]
 genre :: DOMString
   This is the genre of the song.
 
+preview\_music :: DOMString
+  The path to an short audio file which preview the music.
+
+- If ``preview_music`` is not specified, player can create preview from ``sound_channels``.
+
+
+Chart Information Object (ChartInfo)
+====================================
+
 mode\_hint :: DOMString
   Specifies the game mode.
 
@@ -323,76 +385,6 @@ level :: unsigned long
 
 - ``level`` must be ≥0. Negative values may be regarded as invalid by a player.
 
-init\_bpm :: double
-  A value that shows the tempo at the start of the song.
-
-- It is a fatal error if ``init_bpm`` is unspecified.
-
-judge\_rank :: double
-  Specifies the width of judgment window.
-
-  Default value is ``100``.
-
-- If ``judge_rank`` is larger than ``100``, judgment window is wider than player’s default.
-- If ``judge_rank`` is smaller than ``100``, judgment window is narrower than player’s default.
-- The implementation depends of each player.
-
-.. admonition:: A possible interpretation
-
-  This section is provided as information only and is non-normative.
-
-  - The ``judge_rank`` may be interpreted as a percentage of judgment window.
-  - For example, to get a PERFECT judgment normally, you must hit the key within 20 millisecond window.
-  - If ``judge_rank`` is  250, then this judgement window is 2.5x the normal size, which is equal to 50 milliseconds. This make this chart easier.
-  - If ``judge_rank`` is 50, then judgement window is 0.5x the normal size (2x smaller). You must hit the key within 10 millisecond window.
-
-Here are the default judgment windows of some popular players.
-
-============= ======== ========== ========
-LunaticRave2_ [#]_     Bemuse_
-====================== ===================
-Perfect GREAT ≤ 18 ms  METICULOUS ≤ 20 ms
-GREAT         ≤ 40 ms  PRECISE    ≤ 50 ms
-GOOD          ≤ 100 ms GOOD       ≤ 100 ms
-BAD           ≤ 200 ms OFFBEAT    ≤ 200 ms
-POOR          > 200 ms MISSED     > 200 ms
-============= ======== ========== ========
-
-.. _LunaticRave2: http://www.lr2.sakura.ne.jp/index2.html
-.. _Bemuse: http://bemuse.ninja/
-
-.. [#] #RANK 2 (NORMAL)
-
-total :: double
-  Default value is ``100``.
-
-- ``total`` must be ≥ 0.
-
-  - If 0, the lifebar doesn’t increase.
-  - If negative, take the absolute value.
-
-- It defines how much lifebar (also known as *groove gauge*) increases in number compared with default rate.
-
-  - Default rate depends on each player.
-  - If ``total`` is larger than ``100``, lifebar increases more when a note is played with high accuracy.
-  - If ``total`` is smaller than ``100``, lifebar increases less when a note is played with high accuracy.
-  - It can also be a reference to how much lifebar decreases when a game player missed a note.
-
-    - This behavior may also be different by each player.
-
-.. admonition:: Reference
-
-  IIDX’s default rate approximation:
-    If player played all notes perfectly, the groove gauge increases by ``7.605 * n / (0.01 * n + 6.5)`` percent.
-
-back\_image :: DOMString
- The path to a static background image that may be displayed during gameplay.
-
-- If ``back_image`` is undefined, null or empty, player uses default background image.
-- Example: `Toy Musical 2`_
-
-.. _`Toy Musical 2`: https://www.youtube.com/watch?v=8mDNzrQBlBY
-
 eyecatch\_image :: DOMString
   The path to an image that may be displayed during song loading.
 
@@ -411,10 +403,78 @@ banner\_image :: DOMString
 
 - The image size should be 15:4, normally 600x160. Other sizes following this ratio (such as 900x240) are allowed for some high-resolution displays.
 
-preview\_music :: DOMString
-  The path to an short audio file which preview the music.
+back\_image :: DOMString
+ The path to a static background image that may be displayed during gameplay.
 
-- If ``preview_music`` is not specified, player can create preview from ``sound_channels``.
+- If ``back_image`` is undefined, null or empty, player uses default background image.
+- Example: `Toy Musical 2`_
+
+.. _`Toy Musical 2`: https://www.youtube.com/watch?v=8mDNzrQBlBY
+
+Chart Data Object (ChartData)
+==============================
+
+init\_bpm :: double
+  A value that shows the tempo at the start of the song.
+
+- It is a fatal error if ``init_bpm`` is unspecified.
+
+judge\_multiplier :: double
+  Specifies the width of judgment window.
+
+  Default value is ``1.00``.
+
+- If ``judge_multiplier`` is larger than ``1.00``, judgment window is wider than player’s default.
+- If ``judge_multiplier`` is smaller than ``1.00``, judgment window is narrower than player’s default.
+- The implementation depends of each player.
+
+.. admonition:: A possible interpretation
+
+  This section is provided as information only and is non-normative.
+
+  - The ``judge_multiplier`` may be interpreted as a multiplier of judgment window.
+  - For example, to get a PERFECT judgment normally, you must hit the key within 20 millisecond window.
+  - If ``judge_multiplier`` is  2.50, then this judgement window is 2.5x the normal size, which is equal to 50 milliseconds. This make this chart easier.
+  - If ``judge_multiplier`` is 0.50, then judgement window is 0.5x the normal size (2x smaller). You must hit the key within 10 millisecond window.
+
+Here are the default judgment windows of some popular players.
+
+============= ======== ========== ========
+LunaticRave2_ [#]_     Bemuse_
+====================== ===================
+Perfect GREAT ≤ 18 ms  METICULOUS ≤ 20 ms
+GREAT         ≤ 40 ms  PRECISE    ≤ 50 ms
+GOOD          ≤ 100 ms GOOD       ≤ 100 ms
+BAD           ≤ 200 ms OFFBEAT    ≤ 200 ms
+POOR          > 200 ms MISSED     > 200 ms
+============= ======== ========== ========
+
+.. _LunaticRave2: http://www.lr2.sakura.ne.jp/index2.html
+.. _Bemuse: http://bemuse.ninja/
+
+.. [#] #RANK 2 (NORMAL)
+
+life\_multiplier :: double
+  Default value is ``1.00``.
+
+- ``life_multiplier`` must be ≥ 0.
+
+  - If 0, the lifebar doesn’t increase.
+  - If negative, take the absolute value.
+
+- It defines how much lifebar (also known as *groove gauge*) increases in number compared with default rate.
+
+  - Default rate depends on each player.
+  - If ``life_multiplier`` is larger than ``1.00``, lifebar increases more when a note is played with high accuracy.
+  - If ``life_multiplier`` is smaller than ``1.00``, lifebar increases less when a note is played with high accuracy.
+  - It can also be a reference to how much lifebar decreases when a game player missed a note.
+
+    - This behavior may also be different by each player.
+
+.. admonition:: Reference
+
+  IIDX’s default rate approximation:
+    If player played all notes perfectly, the groove gauge increases by ``7.605 * n / (0.01 * n + 6.5)`` percent.
 
 resolution :: unsigned long
   This is the number of pulses per one quarter note in a 4/4 measure.
@@ -507,13 +567,13 @@ Order of Processing
 
 - In case multiple events occur in the same pulse, events are processed in this order:
 
-  - ``Note``, ``BGAEvent``
+  - ``NoteEvent``, ``BGAEvent``
   - ``BpmEvent``
   - ``StopEvent``
 
 - This is consistent with how BMS players interpret these events.
 - If a ``StopEvent`` and a ``BpmEvent`` appear on the same pulse, the tempo will change first, then the music pauses. In other words, use the tempo at the pulse of the ``BpmEvent`` for calculating the duration of the stop in seconds, as well as any timing class similar to ``StopEvent``.
-- If a ``StopEvent`` and a Note appear on the same pulse:
+- If a ``StopEvent`` and a NoteEvent appear on the same pulse:
 
   - If it is a BGM note, the sound slice is played first, then the music pauses.
   - If it is a playable note, the player must hit the note when the music pauses (not when the music resumes).
@@ -616,7 +676,7 @@ MP4 is the most common multimedia file format used in mobile phones with native 
 
 .. [#] http://lame.sourceforge.net/tech-FAQ.txt
 
-notes :: Note[]
+note_events :: NoteEvent[]
   \
 
 - ``x`` is the player channel for this note.
@@ -655,7 +715,7 @@ Given this ``SoundChannel`` object:
 
   sound_channels:
   - name: vox.wav
-    notes:
+    note_events:
     - { x: 1, y: 240, c: false }  # 1
     - { x: 3, y: 360, c: true }   # 2
     - { x: 7, y: 360, c: true }   # 3

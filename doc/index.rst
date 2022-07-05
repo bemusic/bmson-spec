@@ -2,7 +2,7 @@
 bmson format specification
 ==========================
 
-Version 1.0.1-beta (2022/MM/DD)
+Version 1.1.0-beta (2022/07/05)
 
 Links
 =====
@@ -39,29 +39,29 @@ The format follows `Web IDL (Second Edition)`_
   // top-level object
   dictionary Bmson {
       DOMString version;    // bmson version
-      BmsonInfo bmson_info; // bmson information (title, artist, …)
+      SongInfo song_info; // bmson information (title, artist, …)
       ChartInfo chart_info; // chart information (level, chart_name, …)
       ChartData chart_data; // chart data
   }
 
   // header information
-  dictionary BmsonInfo {
+  dictionary SongInfo {
       DOMString    title;           // self-explanatory
       DOMString    subtitle = "";   // self-explanatory
       DOMString    artist;          // self-explanatory
       DOMString[]? subartists = []; // ["key:value"]
       DOMString    genre;           // self-explanatory
-      DOMString?   preview_music;   // preview music filename
   }
 
   // chart info
   dictionary ChartInfo {
-      DOMString     chart_name;            // e.g. "HYPER", "FOUR DIMENSIONS"
-      unsigned long level;                 // self-explanatory
-      DOMString?    eyecatch_image;        // eyecatch image filename
-      DOMString?    banner_image;          // banner image filename
-      DOMString?    back_image;            // background image filename
-      BGA           bga;                   // bga data
+      DOMString     chart_name;     // e.g. "HYPER", "FOUR DIMENSIONS"
+      unsigned long level;          // self-explanatory
+      DOMString?    eyecatch_image; // eyecatch image filename
+      DOMString?    banner_image;   // banner image filename
+      DOMString?    back_image;     // background image filename
+      DOMString?    preview_music;  // preview music filename
+      BGA           bga;            // bga data
   }
 
   // chart data
@@ -86,16 +86,16 @@ The format follows `Web IDL (Second Edition)`_
   }
   // sound channel
   dictionary SoundChannel {
-      DOMString name; // sound file name
-      NoteEvent[] note_events;   // notes using this sound
+      DOMString   name;        // sound file name
+      NoteEvent[] note_events; // notes using this sound
   }
 
   // sound note
   dictionary NoteEvent {
-      any x;           // lane
+      any           x; // lane
       unsigned long y; // pulse number
       unsigned long l; // length (0: normal note; greater than zero (length in pulses): long note)
-      boolean c;       // continuation flag
+      boolean       c; // continuation flag
 
       //Optional variables:
       boolean   up;
@@ -106,8 +106,8 @@ The format follows `Web IDL (Second Edition)`_
 
   // bpm note
   dictionary BpmEvent {
-      unsigned long y; // pulse number
-      double bpm;      // bpm
+      unsigned long y;   // pulse number
+      double        bpm; // bpm
   }
 
   // stop note
@@ -128,8 +128,8 @@ The format follows `Web IDL (Second Edition)`_
 
   // picture file
   dictionary BGAHeader {
-      unsigned long id; // self-explanatory
-      DOMString name;   // picture file name
+      unsigned long id;   // self-explanatory
+      DOMString     name; // picture file name
   }
 
   // bga note
@@ -149,21 +149,28 @@ Changelog
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
-- Separate ``BmsonInfo`` into ``BmsonInfo`` and ``ChartInfo``
-
-  - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
-  - ``BmsonInfo.level`` is now ``ChartInfo.level``
-  - ``BmsonInfo.back_image`` is now ``ChartInfo.back_image``
-  - ``BmsonInfo.eyecatch_image`` is now ``ChartInfo.eyecatch_image``
-  - ``BmsonInfo.banner_image`` is now ``ChartInfo.banner_image``
-  - ``BmsonInfo.bga`` is now ``ChartInfo.bga``
-
 - Separate ``Bmson`` into ``Bmson`` and ``ChartData``
 
   - ``Bmson.lines`` is now ``ChartData.lines``
   - ``Bmson.bpm_events`` is now ``ChartData.bpm_events``
   - ``Bmson.stop_events`` is now ``ChartData.stop_events``
   - ``Bmson.sound_channels`` is now ``ChartData.sound_channels``
+  - ``Bmson.bga`` is now ``ChartInfo.bga``
+  
+- Separate ``BmsonInfo`` into ``SongInfo`` and ``ChartData``
+  
+  - ``BmsonInfo.judge_rank`` is now ``ChartData.judge_multiplier``
+  - ``BmsonInfo.total`` is now ``ChartData.life_multiplier``
+
+- Separate ``BmsonInfo`` into ``SongInfo`` and ``ChartInfo``
+
+  - ``BmsonInfo.mode_hint`` is now ``ChartInfo.mode_hint``
+  - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
+  - ``BmsonInfo.level`` is now ``ChartInfo.level``
+  - ``BmsonInfo.back_image`` is now ``ChartInfo.back_image``
+  - ``BmsonInfo.eyecatch_image`` is now ``ChartInfo.eyecatch_image``
+  - ``BmsonInfo.banner_image`` is now ``ChartInfo.banner_image``
+  - ``BmsonInfo.preview_music`` is now ``ChartInfo.preview_music``
 
 - Rename objects
 
@@ -171,14 +178,8 @@ Breaking Changes
 
 - Rename fields
 
-  - ``Bmson.info`` → ``Bmson.bmson_info``
+  - ``Bmson.info`` → ``Bmson.song_info``
   - ``SoundChannel.notes`` → ``SoundChannel.note_events``
-
-- Move fields
-  
-  - ``BmsonInfo.mode_hint`` → ``ChartInfo.mode_hint``
-  - ``BmsonInfo.judge_rank`` → ``ChartData.judge_multiplier``
-  - ``BmsonInfo.total`` → ``ChartData.life_multiplier``
 
 - ``ChartData.life_multiplier`` and ``ChartData.judge_multiplier`` are now multiplier based instead of percentage based.
 
@@ -194,6 +195,7 @@ Non Breaking Changes
   - ``ChartData.ln_life_hint``
   
 - Add optional fields
+  
   - ``NoteEvent.up``
   - ``NoteEvent.ln_type_hint``
   - ``NoteEvent.ln_judge_hint``
@@ -325,7 +327,7 @@ version :: DOMString
 
 .. _`Semantic Versioning 2.0.0`: http://semver.org/spec/v2.0.0.html
 
-Information Object (BmsonInfo)
+Song Information Object (SongInfo)
 ==============================
 
 title :: DOMString

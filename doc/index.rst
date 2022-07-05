@@ -96,6 +96,12 @@ The format follows `Web IDL (Second Edition)`_
       unsigned long y; // pulse number
       unsigned long l; // length (0: normal note; greater than zero (length in pulses): long note)
       boolean c;       // continuation flag
+
+      //Optional variables:
+      boolean   up;
+      DOMString ln_type_hint;  // long note hints, e.g. "ln", "cn"
+      DOMString ln_judge_hint; // long note judge hint, e.g. "normal", "tick"
+      DOMString ln_life_hint;  // long note life hint, e.g. "normal", "tick"
   }
 
   // bpm note
@@ -143,7 +149,7 @@ Changelog
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
-- Separated ``BmsonInfo`` into ``BmsonInfo`` and ``ChartInfo``
+- Separate ``BmsonInfo`` into ``BmsonInfo`` and ``ChartInfo``
 
   - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
   - ``BmsonInfo.level`` is now ``ChartInfo.level``
@@ -152,7 +158,7 @@ Breaking Changes
   - ``BmsonInfo.banner_image`` is now ``ChartInfo.banner_image``
   - ``BmsonInfo.bga`` is now ``ChartInfo.bga``
 
-- Separated ``Bmson`` into ``Bmson`` and ``ChartData``
+- Separate ``Bmson`` into ``Bmson`` and ``ChartData``
 
   - ``Bmson.lines`` is now ``ChartData.lines``
   - ``Bmson.bpm_events`` is now ``ChartData.bpm_events``
@@ -186,6 +192,12 @@ Non Breaking Changes
   - ``ChartData.ln_type_hint``
   - ``ChartData.ln_judge_hint``
   - ``ChartData.ln_life_hint``
+  
+- Add optional fields
+  - ``NoteEvent.up``
+  - ``NoteEvent.ln_type_hint``
+  - ``NoteEvent.ln_judge_hint``
+  - ``NoteEvent.ln_life_hint``
 
 1.0.0 (from 0.21)
 -----------------
@@ -743,6 +755,18 @@ note_events :: NoteEvent[]
 
   - ``true`` → continue — don’t restart
   - ``false`` → don’t continue — restart the audio
+
+.. admonition:: Optional variables
+
+  - ``up`` is the up keysound flag, used for CN, BSS and MSS (Charge Note, BackSpin and MultiSpin Scratch).
+    
+    - For release keysound or BSS, a normal note with ``true`` must be layered on top of the end of the long note.
+    - For MSS a long note with ``true`` must be layered on top of the end of the long note.
+
+      - This note can use the long note hint overrides detailed below to alter long note behaviour.
+  - ``ln_type_hint`` is the long note type hint override. Refer to ``ChartData`` documentation for more info.
+  - ``ln_judge_hint`` is the long note judge hint override. Refer to ``ChartData`` documentation for more info.
+  - ``ln_life_hint`` is the long note life hint override. Refer to ``ChartData`` documentation for more info.
 
 Slicing Algorithm (Roughly)
 ---------------------------

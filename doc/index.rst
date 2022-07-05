@@ -56,7 +56,6 @@ The format follows `Web IDL (Second Edition)`_
 
   // chart info
   dictionary ChartInfo {
-      DOMString     mode_hint = "beat-7k"; // layout hints, e.g. "beat-7k", "popn-5k", "generic-nkeys"
       DOMString     chart_name;            // e.g. "HYPER", "FOUR DIMENSIONS"
       unsigned long level;                 // self-explanatory
       DOMString?    eyecatch_image;        // eyecatch image filename
@@ -67,14 +66,18 @@ The format follows `Web IDL (Second Edition)`_
 
   // chart data
   dictionary ChartData {
-      double         init_bpm;                // self-explanatory
-      double         judge_multiplier = 1.00; // relative judge width
-      double         life_multiplier = 1.00;  // relative lifebar gain
-      unsigned long  resolution = 240;        // pulses per quarter note
-      BarLine[]?     lines;                   // location of bar-lines in pulses
-      BpmEvent[]?    bpm_events;              // bpm changes
-      StopEvent[]?   stop_events;             // stop events
-      SoundChannel[] sound_channels;          // note data
+      DOMString      mode_hint = "beat-7k";    // layout hints, e.g. "beat-7k", "popn-5k", "generic-nkeys", "ez2-5k"
+      DOMString      ln_type_hint = "ln";      // long note hints, e.g. "ln", "cn"
+      DOMString      ln_judge_hint = "normal"; // long note judge hint, e.g. "normal", "tick"
+      DOMString      ln_life_hint = "normal";  // long note life hint, e.g. "normal", "tick"
+      double         init_bpm;                 // self-explanatory
+      double         judge_multiplier = 1.00;  // relative judge width
+      double         life_multiplier = 1.00;   // relative lifebar gain
+      unsigned long  resolution = 240;         // pulses per quarter note
+      BarLine[]?     lines;                    // location of bar-lines in pulses
+      BpmEvent[]?    bpm_events;               // bpm changes
+      StopEvent[]?   stop_events;              // stop events
+      SoundChannel[] sound_channels;           // note data
   }
 
   // bar-line event
@@ -142,7 +145,6 @@ Breaking Changes
 
 - Separated ``BmsonInfo`` into ``BmsonInfo`` and ``ChartInfo``
 
-  - ``BmsonInfo.mode_hint`` is now ``ChartInfo.mode_hint``
   - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
   - ``BmsonInfo.level`` is now ``ChartInfo.level``
   - ``BmsonInfo.back_image`` is now ``ChartInfo.back_image``
@@ -165,8 +167,12 @@ Breaking Changes
 
   - ``Bmson.info`` → ``Bmson.bmson_info``
   - ``SoundChannel.notes`` → ``SoundChannel.note_events``
-  - ``BmsonInfo.total`` → ``ChartData.life_multiplier``
+
+- Move fields
+  
+  - ``BmsonInfo.mode_hint`` → ``ChartInfo.mode_hint``
   - ``BmsonInfo.judge_rank`` → ``ChartData.judge_multiplier``
+  - ``BmsonInfo.total`` → ``ChartData.life_multiplier``
 
 - ``ChartData.life_multiplier`` and ``ChartData.judge_multiplier`` are now multiplier based instead of percentage based.
 
@@ -174,8 +180,12 @@ Non Breaking Changes
 ~~~~~~~~~~~~~~~~~~~~
 
 - Add fields
-  - ``chart_info``
-  - ``chart_data``
+
+  - ``Bmson.chart_info``
+  - ``Bmson.chart_data``
+  - ``ChartData.ln_type_hint``
+  - ``ChartData.ln_judge_hint``
+  - ``ChartData.ln_life_hint``
 
 1.0.0 (from 0.21)
 -----------------
@@ -357,18 +367,6 @@ preview\_music :: DOMString
 Chart Information Object (ChartInfo)
 ====================================
 
-mode\_hint :: DOMString
-  Specifies the game mode.
-
-  Default value is ``beat-7k``.
-
-- Implementors should look at ``mode_hint`` to check if the note is designed for that particular kind of game mode. For example, 8-key games are different from IIDX-style games, even though they use exactly the same channel numbers.
-- A layout for a generic symmetrical keyboard layout should use ``generic-nkeys`` where ``n`` is the number of keys. It should be ordered left to right.
-
-.. admonition:: Extension tip: On adding a mode that is not listed in this document
-
-   A player may judge whether the format is supported by the player through ``version`` and ``mode_hint``. Therefore if you create an extension format, you should use a different ``mode_hint`` so that a player can judge what to do with the chart. You should not modify ``version``, because it represents underlying bmson format version.
-
 chart\_name :: DOMString
   This is the chart name.
 
@@ -413,6 +411,57 @@ back\_image :: DOMString
 
 Chart Data Object (ChartData)
 ==============================
+
+mode\_hint :: DOMString
+  Specifies the game mode.
+
+  Default value is ``beat-7k``.
+
+- Implementors should look at ``mode_hint`` to check if the note is designed for that particular kind of game mode. For example, 8-key games are different from IIDX-style games, even though they use exactly the same channel numbers.
+- A layout for a generic symmetrical keyboard layout should use ``generic-nkeys`` where ``n`` is the number of keys. It should be ordered left to right.
+
+.. admonition:: Extension tip: On adding a mode that is not listed in this document
+
+   A player may judge whether the format is supported by the player through ``version`` and ``mode_hint``. Therefore if you create an extension format, you should use a different ``mode_hint`` so that a player can judge what to do with the chart. You should not modify ``version``, because it represents underlying bmson format version.
+
+ln\_type\_hint :: DOMString
+  Specifies the long note type.
+
+  Default value is ``ln``.
+
+- Implementors should look at ``ln_type_hint`` to check how to judge long notes **by default**.
+- Implementors should note that **this may be optionally overridden** at each ``NoteEvent``.
+
+.. admonition:: Possible values
+  
+  - ``ln`` means that only the initial press is judged.
+  - ``cn`` means that both the initial press and the release are judged separately.
+
+ln\_judge\_hint :: DOMString
+  Specifies the long note judge type.
+
+  Default value is ``normal``.
+
+- Implementors should look at ``ln_judge_hint`` to check how to handle long note judge **by default**.
+- Implementors should note that **this may be optionally overridden** at each ``NoteEvent``.
+
+.. admonition:: Possible values
+
+  - ``normal`` means that only the corresponding notes are judged, depending on ``ln_type_hint``.
+  - ``ticks`` means that additionally during the long note, extra 'ticks' are going to be judged.
+
+ln\_life\_hint :: DOMString
+  Specifies the long note life type.
+
+  Default value is ``normal``.
+
+- Implementors should look at ``ln_life_hint`` to check how to handle long note life **by default**.
+- Implementors should note that **this may be optionally overridden** at each ``NoteEvent``.
+
+.. admonition:: Possible values
+
+  - ``normal`` means that only the corresponding notes replenish life, depending on ``ln_type_hint``.
+  - ``ticks`` means that additionally during the long note, extra 'ticks' are going to be judged.
 
 init\_bpm :: double
   A value that shows the tempo at the start of the song.

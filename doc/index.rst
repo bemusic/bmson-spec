@@ -47,21 +47,21 @@ The format follows `Web IDL (Second Edition)`_
   // header information
   dictionary SongInfo {
       DOMString    title;           // self-explanatory
-      DOMString    subtitle = "";   // self-explanatory
       DOMString    artist;          // self-explanatory
-      DOMString[]? subartists = []; // ["key:value"]
       DOMString    genre;           // self-explanatory
   }
 
   // chart info
   dictionary ChartInfo {
-      DOMString     chart_name;     // e.g. "HYPER", "FOUR DIMENSIONS"
-      unsigned long level;          // self-explanatory
-      DOMString?    eyecatch_image; // eyecatch image filename
-      DOMString?    banner_image;   // banner image filename
-      DOMString?    back_image;     // background image filename
-      DOMString?    preview_music;  // preview music filename
-      BGA           bga;            // bga data
+      DOMString     subtitle = "";   // self-explanatory
+      DOMString[]?  subartists = []; // ["key:value"]
+      DOMString     chart_name;      // e.g. "HYPER", "FOUR DIMENSIONS"
+      unsigned long level;           // self-explanatory
+      DOMString?    eyecatch_image;  // eyecatch image filename
+      DOMString?    banner_image;    // banner image filename
+      DOMString?    back_image;      // background image filename
+      DOMString?    preview_music;   // preview music filename
+      BGA           bga;             // bga data
   }
 
   // chart data
@@ -164,6 +164,8 @@ Breaking Changes
 
 - Separate ``BmsonInfo`` into ``SongInfo`` and ``ChartInfo``
 
+  - ``BmsonInfo.subtitle`` is now ``ChartInfo.subtitle``
+  - ``BmsonInfo.subartists`` is now ``ChartInfo.subartists``
   - ``BmsonInfo.mode_hint`` is now ``ChartInfo.mode_hint``
   - ``BmsonInfo.chart_name`` is now ``ChartInfo.chart_name``
   - ``BmsonInfo.level`` is now ``ChartInfo.level``
@@ -335,14 +337,6 @@ title :: DOMString
 
 - The implementor *need not* slice title string by delimiters (such as ``()``, ``--``)
 
-subtitle :: DOMString
-  This is the subtitle of song that will be displayed.
-
-  Default value is an empty string.
-
-- It is usually shown as a smaller text than ``title``.
-- Multiple line subtitle may be possible by including a newline character ``\n``
-
 artist :: DOMString
   This is the primary artist that will be displayed.
 
@@ -351,6 +345,20 @@ artist :: DOMString
 
   - ``Artist1 vs Artist2``
   - ``Artist1 feat. Vocalist``
+
+genre :: DOMString
+  This is the genre of the song.
+
+Chart Information Object (ChartInfo)
+====================================
+
+subtitle :: DOMString
+  This is the subtitle of song that will be displayed.
+
+  Default value is an empty string.
+
+- It is usually shown as a smaller text than ``title``.
+- Multiple line subtitle may be possible by including a newline character ``\n``
 
 subartists :: DOMString[]
   Other artists that help authored this bmson file.
@@ -368,18 +376,6 @@ subartists :: DOMString[]
 - Example: ``"subartists": ["music:5argon", "music:encX", "chart:flicknote", "movie:5argon", "image:5argon"]``
 
 .. _BMserver: http://bms.main.jp/
-
-genre :: DOMString
-  This is the genre of the song.
-
-preview\_music :: DOMString
-  The path to an short audio file which preview the music.
-
-- If ``preview_music`` is not specified, player can create preview from ``sound_channels``.
-
-
-Chart Information Object (ChartInfo)
-====================================
 
 chart\_name :: DOMString
   This is the chart name.
@@ -422,6 +418,11 @@ back\_image :: DOMString
 - Example: `Toy Musical 2`_
 
 .. _`Toy Musical 2`: https://www.youtube.com/watch?v=8mDNzrQBlBY
+
+preview\_music :: DOMString
+  The path to an short audio file which preview the music.
+
+- If ``preview_music`` is not specified, player can create preview from ``sound_channels``.
 
 Chart Data Object (ChartData)
 ==============================

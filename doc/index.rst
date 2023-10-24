@@ -2,7 +2,7 @@
 bmson format specification
 ==========================
 
-Version 1.1.0-beta (2022/07/05)
+Version 2.0.0 (2023/10/24)
 
 Links
 =====
@@ -38,30 +38,30 @@ The format follows `Web IDL (Second Edition)`_
 
   // top-level object
   dictionary Bmson {
-      DOMString version;    // bmson version
-      SongInfo song_info; // bmson information (title, artist, …)
-      ChartInfo chart_info; // chart information (level, chart_name, …)
-      ChartData chart_data; // chart data
+      DOMString version;                       // bmson version
+      SongInfo song_info;                      // bmson information (title, artist, …)
+      ChartInfo chart_info;                    // chart information (level, chart_name, …)
+      ChartData chart_data;                    // chart data
   }
 
   // header information
   dictionary SongInfo {
-      DOMString    title;           // self-explanatory
-      DOMString    artist;          // self-explanatory
-      DOMString    genre;           // self-explanatory
+      DOMString    title;                      // self-explanatory
+      DOMString    artist;                     // self-explanatory
+      DOMString    genre;                      // self-explanatory
   }
 
   // chart info
   dictionary ChartInfo {
-      DOMString     subtitle = "";   // self-explanatory
-      DOMString[]?  subartists = []; // ["key:value"]
-      DOMString     chart_name;      // e.g. "HYPER", "FOUR DIMENSIONS"
-      unsigned long level;           // self-explanatory
-      DOMString?    eyecatch_image;  // eyecatch image filename
-      DOMString?    banner_image;    // banner image filename
-      DOMString?    back_image;      // background image filename
-      DOMString?    preview_music;   // preview music filename
-      BGA           bga;             // bga data
+      DOMString     subtitle = "";             // self-explanatory
+      DOMString[]?  subartists = [];           // ["key:value"]
+      DOMString     chart_name;                // e.g. "HYPER", "FOUR DIMENSIONS"
+      unsigned long level;                     // self-explanatory
+      DOMString?    eyecatch_image;            // eyecatch image filename
+      DOMString?    banner_image;              // banner image filename
+      DOMString?    back_image;                // background image filename
+      DOMString?    preview_music;             // preview music filename
+      BGA           bga;                       // bga data
   }
 
   // chart data
@@ -78,64 +78,93 @@ The format follows `Web IDL (Second Edition)`_
       BpmEvent[]?    bpm_events;               // bpm changes
       StopEvent[]?   stop_events;              // stop events
       SoundChannel[] sound_channels;           // note data
+
+      // DJ.NEXT Extension:
+      JudgementDeltas judge_deltas;            // custom judgement window deltas in ms
+      LifeDeltas      life_deltas;             // custom life increments/decrements in percentage
   }
 
   // bar-line event
   dictionary BarLine {
-      unsigned long y; // pulse number
+      unsigned long y;                         // pulse number
   }
+
   // sound channel
   dictionary SoundChannel {
-      DOMString   name;        // sound file name
-      NoteEvent[] note_events; // notes using this sound
+      DOMString   name;                        // sound file name
+      NoteEvent[] note_events;                 // notes using this sound
   }
 
   // sound note
   dictionary NoteEvent {
-      any           x; // lane
-      unsigned long y; // pulse number
-      unsigned long l; // length (0: normal note; greater than zero (length in pulses): long note)
-      boolean       c; // continuation flag
+      any           x;                         // lane
+      unsigned long y;                         // pulse number
+      unsigned long l;                         // length (0: normal note; greater than zero (length in pulses): long note)
+      boolean       c;                         // continuation flag
 
-      //Optional variables:
+      // Optional variables:
       boolean   up;
-      DOMString ln_type_hint;  // long note hints, e.g. "ln", "cn"
-      DOMString ln_judge_hint; // long note judge hint, e.g. "normal", "tick"
-      DOMString ln_life_hint;  // long note life hint, e.g. "normal", "tick"
+      DOMString ln_type_hint;                  // long note hints, e.g. "ln", "cn"
+      DOMString ln_judge_hint;                 // long note judge hint, e.g. "normal", "tick"
+      DOMString ln_life_hint;                  // long note life hint, e.g. "normal", "tick"
+
+      // DJ.NEXT Extension:
+      signed byte vol;                         // sound volume in percentage
+      signed byte pan;                         // sound panning
   }
 
   // bpm note
   dictionary BpmEvent {
-      unsigned long y;   // pulse number
-      double        bpm; // bpm
+      unsigned long y;                         // pulse number
+      double        bpm;                       // bpm
   }
 
   // stop note
   dictionary StopEvent {
-      unsigned long y;        // pulse number
-      unsigned long duration; // stop duration (pulses to stop)
+      unsigned long y;                         // pulse number
+      unsigned long duration;                  // stop duration (pulses to stop)
   }
 
   // for any custom classes of timing,
   // follow format as bpmevent or stopevent.
   // bga
   dictionary BGA {
-      BGAHeader[] bga_header;   // picture id and filename
-      BGAEvent[]  bga_events;   // picture sequence
-      BGAEvent[]  layer_events; // picture sequence overlays bga_notes
-      BGAEvent[]  poor_events;  // picture sequence when missed
+      BGAHeader[] bga_header;                  // picture id and filename
+      BGAEvent[]  bga_events;                  // picture sequence
+      BGAEvent[]  layer_events;                // picture sequence overlays bga_notes
+      BGAEvent[]  poor_events;                 // picture sequence when missed
   }
 
   // picture file
   dictionary BGAHeader {
-      unsigned long id;   // self-explanatory
-      DOMString     name; // picture file name
+      unsigned long id;                        // self-explanatory
+      DOMString     name;                      // picture file name
   }
 
   // bga note
   dictionary BGAEvent {
-      unsigned long y;  // pulse number
-      unsigned long id; // corresponds to BGAHeader.id
+      unsigned long y;                         // pulse number
+      unsigned long id;                        // corresponds to BGAHeader.id
+  }
+
+
+  // DJ.NEXT Extension:
+  // ------------------
+
+  // judgement delta values
+  dictionary JudgementDeltas {
+      unsigned long perfect;                   // perfect window delta in ms
+      unsigned long great;                     // great window delta in ms
+      unsigned long good;                      // good window delta in ms
+      unsigned long miss;                      // miss window delta in ms
+  }
+
+  // life delta values
+  dictionary LifeDeltas {
+      signed float perfect;                    // perfect life delta in percent
+      signed float great;                      // great life delta in percent
+      signed float good;                       // good life delta in percent
+      signed float miss;                       // miss life delta in percent
   }
 
 .. _`Web IDL (Second Edition)`: https://heycam.github.io/webidl/
@@ -143,7 +172,7 @@ The format follows `Web IDL (Second Edition)`_
 Changelog
 =========
 
-1.0.1 (from 1.0.0)
+2.0.0 (from 1.0.0)
 ------------------
 
 Breaking Changes
@@ -202,6 +231,18 @@ Non Breaking Changes
   - ``NoteEvent.ln_type_hint``
   - ``NoteEvent.ln_judge_hint``
   - ``NoteEvent.ln_life_hint``
+
+- Add objects (DJ.NEXT extension)
+
+  - ``JudgementDeltas``
+  - ``LifeDeltas``
+
+- Add fields (DJ.NEXT extension)
+
+  - ``ChartData.judge_deltas``
+  - ``ChartData.life_deltas``
+  - ``NoteEvent.vol``
+  - ``NoteEvent.pan``
 
 1.0.0 (from 0.21)
 -----------------
@@ -317,7 +358,7 @@ Top Level Object (Bmson)
 version :: DOMString
   Specifies the version of this bmson.
 
-  Currently possible value is ``1.0.0``.
+  Currently possible value is ``2.0.0``.
 
 - Version numbers should be compared using the `Semantic Versioning 2.0.0`_ algorithm.
 - bmson file without version field is a legacy bmson file. The implementor should either:
@@ -979,7 +1020,7 @@ mode_hint   Buttons
 **popn-9k** 1 2 3 4 5 6 7 8 9
 =========== = = = = = = = = =
 
-EZ2:
+DJ.NEXT:
 ----
 Player 1 side:
 
@@ -988,13 +1029,13 @@ Player 1 side:
 ================= == == == == == == == == == == == == == == == == == ==
 mode_hint         Buttons side 1       Effectors   Buttons side 2
 ----------------- -------------------- ----------- --------------------
-**ez2-5k-only**      1  2  3  4  5
-**ez2-ruby**      SC 1  2  3  4  5  PD
-**ez2-5k**        SC 1  2  3  4  5  PD
-**ez2-7k**        SC 1  2  3  4  5  PD E1 E2
-**ez2-10k**       SC 1  2  3  4  5  PD                6  7  8  9  10 SC
-**ez2-14k**       SC 1  2  3  4  5     E1 E2 E3 E4    6  7  8  9  10 SC
-**ez2-andromeda** SC 1  2  3  4  5  PD E1 E2 E3 E4 PD 6  7  8  9  10 SC
+**dj-5k-only**       1  2  3  4  5
+**dj-ruby**       TT 1  2  3  4  5  PD
+**dj-5k**         TT 1  2  3  4  5  PD
+**dj-7k**         TT 1  2  3  4  5  PD E1 E2
+**dj-10k**        TT 1  2  3  4  5  PD                6  7  8  9  10 TT
+**dj-14k**        TT 1  2  3  4  5     E1 E2 E3 E4    6  7  8  9  10 TT
+**dj-andromeda**  TT 1  2  3  4  5  PD E1 E2 E3 E4 PD 6  7  8  9  10 TT
 ================= == == == == == == == == == == == == == == == == == ==
 
 Player 2 side:
@@ -1004,15 +1045,15 @@ Player 2 side:
 ================= == == == == == == == == == == == == == == == == == ==
 mode_hint         Buttons side 1       Effectors   Buttons side 2
 ----------------- -------------------- ----------- --------------------
-**ez2-5k-only**                                       6  7  8  9  10
-**ez2-ruby**                                       PD 6  7  8  9  10 SC
-**ez2-5k**                                         PD 6  7  8  9  10 SC
-**ez2-7k**                                   E3 E4 PD 6  7  8  9  10 SC
-**ez2-10k**       SC 1  2  3  4  5                 PD 6  7  8  9  10 SC
-**ez2-14k**       SC 1  2  3  4  5     E1 E2 E3 E4    6  7  8  9  10 SC
-**ez2-andromeda** SC 1  2  3  4  5  PD E1 E2 E3 E4 PD 6  7  8  9  10 SC
+**dj-5k-only**                                        6  7  8  9  10
+**dj-ruby**                                        PD 6  7  8  9  10 TT
+**dj-5k**                                          PD 6  7  8  9  10 TT
+**dj-7k**                                    E3 E4 PD 6  7  8  9  10 TT
+**dj-10k**        TT 1  2  3  4  5                 PD 6  7  8  9  10 TT
+**dj-14k**        TT 1  2  3  4  5     E1 E2 E3 E4    6  7  8  9  10 TT
+**dj-andromeda**  TT 1  2  3  4  5  PD E1 E2 E3 E4 PD 6  7  8  9  10 TT
 ================= == == == == == == == == == == == == == == == == == ==
 
-SC: Scratch (Turntable)
+TT: Turntable
 
 PD: Pedal
